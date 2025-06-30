@@ -1,29 +1,33 @@
 with st.form("certificado_formulario"):
-    # 🎨 Estilos para etiquetas en azul visible
-    st.markdown("""
-        <style>
-        label, .stTextInput label, .stDateInput label, .stNumberInput label {
-            color: #0056B3 !important;  /* Azul visible */
-            font-weight: bold;
-            font-size: 16px;
-        }
-        </style>
-    """, unsafe_allow_html=True)
 
-    # 📋 Campos del formulario
-    fecha = st.date_input("📅 Fecha", value=date.today())
-    orden = st.text_input("🧾 Orden")
-    placa = st.text_input("🚛 Placa")
-    codigo = st.text_input("🔢 Código del producto")
-    cantidad = st.number_input("📦 Cantidad", min_value=0, step=1)
-    lote = st.text_input("🔖 Lote")
-    vencimiento = st.date_input("📅 Fecha de vencimiento")
+    st.markdown("### 📄 Formulario de registro")
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">📅 Fecha</p>', unsafe_allow_html=True)
+    fecha = st.date_input("", value=date.today())
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">🧾 Orden</p>', unsafe_allow_html=True)
+    orden = st.text_input("")
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">🚛 Placa</p>', unsafe_allow_html=True)
+    placa = st.text_input("")
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">🔢 Código del producto</p>', unsafe_allow_html=True)
+    codigo = st.text_input("")
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">📦 Cantidad</p>', unsafe_allow_html=True)
+    cantidad = st.number_input("", min_value=0, step=1)
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">🔖 Lote</p>', unsafe_allow_html=True)
+    lote = st.text_input("")
+
+    st.markdown('<p style="color:#0056B3;font-weight:bold">📅 Fecha de vencimiento</p>', unsafe_allow_html=True)
+    vencimiento = st.date_input("")
 
     enviado = st.form_submit_button("Guardar")
 
     if enviado:
         st.success("✅ Registro guardado exitosamente")
-        st.write("### 📄 Datos capturados:")
+        st.write("### 📋 Datos capturados:")
         st.write(f"Fecha: {fecha}")
         st.write(f"Orden: {orden}")
         st.write(f"Placa: {placa}")
