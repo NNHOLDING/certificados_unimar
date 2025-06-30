@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit.components.v1 import html
 from datetime import date
 
-# 🖌️ Estilo visual
+# 🎨 Estilos visuales
 estilos = """
     <style>
     .main {
@@ -35,21 +35,21 @@ estilos = """
 """
 st.markdown(estilos, unsafe_allow_html=True)
 
-# 🧾 Encabezado general
+# 🧾 Encabezado
 st.set_page_config(page_title="Certificados Unimar", layout="centered")
 st.title("Certificados Unimar")
 st.subheader("SMART INTELLIGENCE TOOLS")
 
-# 📋 Formulario principal
+# 📋 Formulario con etiquetas visibles
 with st.form("certificado_formulario"):
     fecha = st.date_input("📅 Fecha", value=date.today())
     orden = st.text_input("🧾 Orden")
     placa = st.text_input("🚛 Placa")
-    codigo = st.text_input("🔢 Código producto")
+    codigo = st.text_input("🔢 Código del producto")
     cantidad = st.number_input("📦 Cantidad", min_value=0, step=1)
     lote = st.text_input("🔖 Lote")
     vencimiento = st.date_input("📅 Fecha de vencimiento")
-
+    
     enviado = st.form_submit_button("Guardar")
 
     if enviado:
@@ -58,19 +58,19 @@ with st.form("certificado_formulario"):
         st.write(f"Fecha: {fecha}")
         st.write(f"Orden: {orden}")
         st.write(f"Placa: {placa}")
-        st.write(f"Código producto: {codigo}")
+        st.write(f"Código del producto: {codigo}")
         st.write(f"Cantidad: {cantidad}")
         st.write(f"Lote: {lote}")
         st.write(f"Fecha de vencimiento: {vencimiento}")
 
-# 👇 Sección de escaneo con cámara
+# 📷 Escáner de código de barras con cámara
 st.header("📷 Escáner de Código de Barras")
 st.markdown("Activa tu cámara y escanea un código. El resultado aparecerá abajo:")
 
 html("""
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <div id="scanner-container" style="width: 100%; max-width: 500px; margin: auto;"></div>
-<h3 id="result" style="text-align: center;">Esperando escaneo...</h3>
+<h3 id="result" style="text-align: center; color: #333;">Esperando escaneo...</h3>
 <script>
   let resultEl = document.getElementById("result");
   Quagga.init({
@@ -102,7 +102,7 @@ html("""
 </script>
 """, height=400)
 
-# 📜 Footer institucional
+# 📜 Footer
 st.markdown("""
 <footer>
 NN Holding Solutions Ever Be Better© Todos los derechos reservados, 2025
