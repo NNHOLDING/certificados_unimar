@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificados Unimar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #1B8FFE;
+            color: white;
+        }
+        h1 { color: #ffffff; }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        label { font-weight: bold; color: #2c3e50; }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            font-size: 18px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #2ecc71; }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #0A6ACF;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        #video {
+            display: none;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Certificados Unimar</h1>
+    <h2>SMART INTELLIGENCE TOOLS</h2>
+    <form id="formulario">
+        <label>Fecha:</label> <input type="date" id="fecha" required>
+        <label>Orden:</label> <input type="text" id="orden" required>
+        <label>Placa:</label> <input type="text" id="placa" required>
+        <label>Código producto:</label>
+        <input type="text" id="codigo" required>
+        <button type="button" onclick="iniciarEscaneo()">📷 Escanear Código</button>
+        <label>Cantidad:</label> <input type="number" id="cantidad" required>
+        <label>Lote:</label> <input type="text" id="lote" required>
+        <label>Fecha de vencimiento:</label> <input type="date" id="vencimiento" required>
+        <button type="submit" id="guardar">Guardar</button>
+    </form>
+
+    <video id="video" autoplay></video>
+
+    <footer>
+        NN Holding Solutions Ever Be Better© Todos los derechos reservados, 2025
+    </footer>
+
+    <script>
+        let streamActivo = null;
+
+        // Verificar si QuaggaJS está cargado correctamente
+        console.log("QuaggaJS cargado correctamente:", Quagga);
+
+        function cargarFechaActual() {
+            let hoy = new Date();
+            let fechaISO = hoy.toISOString().split("T")[0];
+            document.getElementById("fecha").value = fechaISO;
+        }
+        window.onload = cargarFechaActual;
+
+        async function iniciarEscaneo() {
+            try {
+                let video = document.getElementById("video");
+                video.style.display = "block";
+
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: video,
+                        constraints: {
+                            facingMode: "environment",
+                            width: { min: 640 },
+                            height: { min: 480 }
+                        }
+                    },
+                    locator: {
+                        patchSize: "medium",
+                        halfSample: true
+                    },
+                    decoder: {
+                        readers: ["code_128_reader", "ean_reader", "ean_13_reader", "upc_reader"]
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error("Error al iniciar QuaggaJS:", err);
+                        alert("⚠️ No se pudo inicializar el escáner.");
+                        return;
+                    }
+                    Quagga.start();
+                });
+
+                Quagga.onDetected(function (result) {
+                    let codigoDetectado = result.codeResult.code;
+                    document.getElementById("codigo").value = codigoDetectado;
+                    alert("✅ Código escaneado: " + codigoDetectado);
+                    detenerEscaneo();
+                });
+
+            } catch (error) {
+                alert("⚠️ No se pudo acceder a la cámara.");
+                console.error("Error al acceder a la cámara:", error);
+            }
+        }
+
+        function detenerEscaneo() {
+            Quagga.stop();
+            let video = document.getElementById("video");
+            video.style.display = "none";
+        }
+
+        document.getElementById("formulario").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            let datos = {
+                fecha: document.getElementById("fecha").value,
+                orden: document.getElementById("orden").value,
+                placa: document.getElementById("placa").value,
+                codigo: document.getElementById("codigo").value,
+                descripcion: "Producto",
+                cantidad: document.getElementById("cantidad").value,
+                lote: document.getElementById("lote").value,
+                vencimiento: document.getElementById("vencimiento").value
+            };
+
+            let url = "http://127.0.0.1:5000/guardar_registro";
+
+            try {
+                let response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(datos)
+                });
+
+                let data = await response.json();
+
+                if (response.ok) {
+                    alert("✅ Transferencia exitosa. Registro guardado en Excel.");
+                    document.getElementById("formulario").reset();
+                    cargarFechaActual();
+                } else {
+                    alert("⚠️ Error: " + data.error);
+                }
+            } catch (error) {
+                console.error("⚠️ Error en la transferencia:", error);
+                alert("⚠️ Hubo un problema al guardar.");
+            }
+        });
+    </script>
+
+</body>
+</html>
