@@ -1,15 +1,16 @@
 with st.form("certificado_formulario"):
-    # 🔧 Ajuste visual para etiquetas legibles
+    # 🎨 Estilos para etiquetas en azul visible
     st.markdown("""
         <style>
         label, .stTextInput label, .stDateInput label, .stNumberInput label {
-            color: #333333 !important;
+            color: #0056B3 !important;  /* Azul visible */
             font-weight: bold;
             font-size: 16px;
         }
         </style>
     """, unsafe_allow_html=True)
 
+    # 📋 Campos del formulario
     fecha = st.date_input("📅 Fecha", value=date.today())
     orden = st.text_input("🧾 Orden")
     placa = st.text_input("🚛 Placa")
